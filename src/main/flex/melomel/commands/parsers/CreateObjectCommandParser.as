@@ -11,6 +11,8 @@
  */
 package melomel.commands.parsers
 {
+import melomel.core.ObjectProxy;
+import melomel.core.ObjectProxyManager;
 import melomel.commands.CreateObjectCommand;
 import melomel.commands.ICommand;
 
@@ -29,7 +31,8 @@ import flash.utils.getDefinitionByName;
  *	
  *	@see melomel.commands.CreateObjectCommand
  */
-public class CreateObjectCommandParser implements ICommandParser
+public class CreateObjectCommandParser extends ObjectProxyCommandParser
+									implements ICommandParser
 {
 	//--------------------------------------------------------------------------
 	//
@@ -40,8 +43,9 @@ public class CreateObjectCommandParser implements ICommandParser
 	/**
 	 *	Constructor.
 	 */
-	public function CreateObjectCommandParser()
+	public function CreateObjectCommandParser(manager:ObjectProxyManager)
 	{
+		super(manager);
 	}
 	
 
@@ -86,8 +90,14 @@ public class CreateObjectCommandParser implements ICommandParser
 			}
 		}
 
+		// Extract arguments
+		var constructorArgs:Array = [];
+		for each(var argXml:XML in message.args.arg) {
+			constructorArgs.push(parseMessageArgument(argXml));
+		}
+
 		// Return command
-		return new CreateObjectCommand(clazz, throwable);
+		return new CreateObjectCommand(clazz, constructorArgs, throwable);
 	}
 }
 }

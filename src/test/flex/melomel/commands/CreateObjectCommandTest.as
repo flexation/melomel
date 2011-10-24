@@ -63,5 +63,15 @@ public class CreateObjectCommandTest
 		command.throwable = false;
 		Assert.assertNull(command.execute());
 	}
+
+	[Test]
+	public function shouldAcceptConstructorArgs():void
+	{
+		command.clazz = Point;
+		command.constructorArgs = [1,2];
+		object = command.execute();
+		Assert.assertEquals(object.x, 1);
+		Assert.assertEquals(object.y, 2);
+	}
 }
 }

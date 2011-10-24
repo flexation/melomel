@@ -64,7 +64,7 @@ public class Bridge extends EventDispatcher
 		setParser("set", new SetPropertyCommandParser(objectProxyManager));
 		setParser("invoke", new InvokeMethodCommandParser(objectProxyManager));
 		setParser("invoke-function", new InvokeFunctionCommandParser(objectProxyManager));
-		setParser("create", new CreateObjectCommandParser());
+		setParser("create", new CreateObjectCommandParser(objectProxyManager));
 		
 		// Setup formatters
 		objectFormatter = new ObjectFormatter(objectProxyManager);

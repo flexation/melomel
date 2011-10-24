@@ -33,13 +33,16 @@ public class CreateObjectCommand implements ICommand
 	 *	Constructor.
 	 *	
 	 *	@param clazz      The class reference to instantiate from.
+	 *	@param methodArgs  A list of arguments to pass to the constructor.
 	 *	@param throwable  A flag stating if invalid class errors are thrown.
 	 */
 	public function CreateObjectCommand(clazz:Class=null,
+										constructorArgs:Array=null,
 										throwable:Boolean=true)
 	{
-		this.clazz     = clazz;
-		this.throwable = throwable;
+		this.clazz           = clazz;
+		this.constructorArgs = constructorArgs;
+		this.throwable       = throwable;
 	}
 	
 
@@ -53,6 +56,11 @@ public class CreateObjectCommand implements ICommand
 	 *	The class to instantiate from.
 	 */
 	public var clazz:Class;
+
+	/**
+	 *	A list of arguments to pass to the constructor.
+	 */
+	public var constructorArgs:Array;
 
 	/**
 	 *	A flag stating if the command will throw an error for an invalid class.
@@ -84,7 +92,34 @@ public class CreateObjectCommand implements ICommand
 		}
 
 		// Instantiate and return
-		return (new clazz());
+		var numberOfArgs:int = 0;
+		if(constructorArgs != null){
+			numberOfArgs = constructorArgs.length;
+		}
+		try {
+			switch(numberOfArgs) {
+			  case  0: return (new clazz());
+			  case  1: return (new clazz(constructorArgs[0]));
+			  case  2: return (new clazz(constructorArgs[0], constructorArgs[1]));
+			  case  3: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2]));
+			  case  4: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3]));
+			  case  5: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3], constructorArgs[4]));
+			  case  6: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3], constructorArgs[4], constructorArgs[5]));
+			  case  7: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3], constructorArgs[4], constructorArgs[5], constructorArgs[6]));
+			  case  8: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3], constructorArgs[4], constructorArgs[5], constructorArgs[6], constructorArgs[7]));
+			  case  9: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3], constructorArgs[4], constructorArgs[5], constructorArgs[6], constructorArgs[7], constructorArgs[8]));
+			  case 10: return (new clazz(constructorArgs[0], constructorArgs[1], constructorArgs[2], constructorArgs[3], constructorArgs[4], constructorArgs[5], constructorArgs[6], constructorArgs[7], constructorArgs[8], constructorArgs[9]));
+			}
+			if(throwable) {
+				throw new MelomelError("Class instantiation with more than 10 arguments is not supported");
+			}
+		}
+		catch(e:Error) {
+			if(throwable) {
+				throw new MelomelError("Cannot create a new instance with " + numberOfArgs.toString() + " arguments");
+			}
+		}
+		return null;
 	}
 }
 }

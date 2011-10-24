@@ -1,6 +1,7 @@
 package melomel.commands.parsers
 {
 import melomel.commands.CreateObjectCommand;
+import melomel.core.ObjectProxyManager;
 
 import org.flexunit.Assert;
 import org.flexunit.async.Async;
@@ -17,11 +18,13 @@ public class CreateObjectCommandParserTest
 
 	private var parser:ICommandParser;
 	private var command:CreateObjectCommand;
+	private var manager:ObjectProxyManager;
 	
 	[Before]
 	public function setUp():void
 	{
-		parser = new CreateObjectCommandParser();
+		manager = new ObjectProxyManager();
+		parser = new CreateObjectCommandParser(manager);
 	}
 
 	[After]
@@ -51,6 +54,19 @@ public class CreateObjectCommandParserTest
 		// Parse message
 		command = parser.parse(message) as CreateObjectCommand;
 		Assert.assertEquals(command.clazz, Point);
+	}
+
+	[Test]
+	public function parseWithConstructorArgs():void
+	{
+		// Assign actual proxy id to the message
+		var message:XML = <create class="flash.geom.Point"><args><arg value="John"/><arg value="2" dataType="int"/></args></create>;
+
+		// Parse message
+		command = parser.parse(message) as CreateObjectCommand;
+		Assert.assertEquals(command.constructorArgs.length, 2);
+		Assert.assertEquals(command.constructorArgs[0], "John");
+		Assert.assertEquals(command.constructorArgs[1], 2);
 	}
 
 	[Test(expects="melomel.errors.MelomelError")]
